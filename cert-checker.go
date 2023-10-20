@@ -1,10 +1,9 @@
 package main
 
 import (
+	"cert-checker/argsparse"
 	"fmt"
 	"github.com/gocolly/colly/v2"
-	"os"
-	"regexp"
 	"strings"
 )
 
@@ -19,12 +18,7 @@ type CertData struct {
 }
 
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Println("please just enter a domain")
-		return
-	}
-	checkDomain(os.Args[1])
-	url := "https://crt.sh/?q=" + os.Args[1]
+	Scan := argsparse.ArgumentParser()
 	var certs []CertData
 	c := colly.NewCollector()
 	c.OnHTML("table table tr", func(e *colly.HTMLElement) {
@@ -50,24 +44,37 @@ func main() {
 		})
 		certs = append(certs, cert)
 	})
-	err := c.Visit(url)
+	err := c.Visit(Scan.Target)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
 	for _, c := range certs {
-		fmt.Println(c)
-	}
-}
-
-func checkDomain(d string) {
-	regex := "([a-zA-Z0-9-]+)\\.[a-z]{2,}$"
-	r, err := regexp.Compile(regex)
-	if err != nil {
-		panic(err)
-	}
-	if !r.MatchString(d) {
-		fmt.Println("please provide a correct domain")
-		return
+		if Scan.Base {
+			fmt.Println(c.CrtShID, "    ", c.LoggedAt, "    ", c.NotBefore, "    ", c.NotAfter, "    ",
+				c.CommonName, "    ", c.MatchingIdentities, "    ", c.IssuerName)
+			continue
+		}
+		if Scan.CrtShID {
+			fmt.Print(c.CrtShID, "    ")
+		}
+		if Scan.LoggedAt {
+			fmt.Print(c.LoggedAt, "    ")
+		}
+		if Scan.NotBefore {
+			fmt.Print(c.NotAfter, "    ")
+		}
+		if Scan.NotAfter {
+			fmt.Print(c.NotAfter, "    ")
+		}
+		if Scan.CommonName {
+			fmt.Print(c.CommonName, "    ")
+		}
+		if Scan.MatchingIdentities {
+			fmt.Print(c.MatchingIdentities, "    ")
+		}
+		if Scan.IssuerName {
+			fmt.Print(c.IssuerName, "\n")
+		}
 	}
 }
