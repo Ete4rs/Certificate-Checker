@@ -20,28 +20,37 @@ type ResultFLag struct {
 }
 
 func ArgumentParser() *ResultFLag {
-	flags := ResultFLag{}
-	flags.CrtShID = *flag.Bool("c", false, "cert ID")
-	flags.LoggedAt = *flag.Bool("l", false, "logged At")
-	flags.NotBefore = *flag.Bool("b", false, "not exist before")
-	flags.NotAfter = *flag.Bool("a", false, "not exist after")
-	flags.CommonName = *flag.Bool("n", false, "common name")
-	flags.MatchingIdentities = *flag.Bool("m", false, "Matching Identities")
-	flags.IssuerName = *flag.Bool("i", false, "issuer")
-	flags.Target = *flag.String("t", "", "domain")
+	certID := flag.Bool("c", false, "cert ID")
+	loggedAt := flag.Bool("l", false, "logged At")
+	notBefore := flag.Bool("b", false, "not exist before")
+	notAfter := flag.Bool("a", false, "not exist after")
+	commonName := flag.Bool("n", false, "common name")
+	matchingIdentities := flag.Bool("m", false, "Matching Identities")
+	issuerName := flag.Bool("i", false, "issuer")
+	target := flag.String("t", "", "domain")
 	help := flag.Bool("h", false, "Show help")
 	flag.Parse()
 	if *help {
 		flag.PrintDefaults()
 		os.Exit(0)
 	}
-	checkDomain(flags.Target)
-	flags.Target = "https://crt.sh/?q=" + flags.Target
+	checkDomain(*target)
+
+	flags := ResultFLag{}
+	flags.CrtShID = *certID
+	flags.LoggedAt = *loggedAt
+	flags.NotBefore = *notBefore
+	flags.NotAfter = *notAfter
+	flags.CommonName = *commonName
+	flags.MatchingIdentities = *matchingIdentities
+	flags.IssuerName = *issuerName
+	flags.Target = "https://crt.sh/?q=" + *target
+
 	if flags.IssuerName || flags.CommonName || flags.MatchingIdentities || flags.NotBefore || flags.LoggedAt ||
 		flags.CrtShID || flags.NotAfter {
-		flags.Base = true
-	} else {
 		flags.Base = false
+	} else {
+		flags.Base = true
 	}
 	return &flags
 }

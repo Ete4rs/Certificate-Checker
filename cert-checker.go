@@ -49,32 +49,59 @@ func main() {
 		fmt.Println("Error:", err)
 		return
 	}
+	if Scan.Base {
+		fmt.Println("cert.sh ID      Logged At       Not Before      Not After       Common Name     " +
+			"Matching Identities          IssuerName")
+	} else {
+		if Scan.CrtShID {
+			fmt.Print("cert.sh ID      ")
+		}
+		if Scan.LoggedAt {
+			fmt.Print("Logged At      ")
+		}
+		if Scan.NotBefore {
+			fmt.Print("Not Before      ")
+		}
+		if Scan.NotAfter {
+			fmt.Print("Not After      ")
+		}
+		if Scan.CommonName {
+			fmt.Print("Common Name      ")
+		}
+		if Scan.MatchingIdentities {
+			fmt.Print("Matching Identities      ")
+		}
+		if Scan.IssuerName {
+			fmt.Print("Issuer Name      ")
+		}
+	}
 	for _, c := range certs {
 		if Scan.Base {
 			fmt.Println(c.CrtShID, "    ", c.LoggedAt, "    ", c.NotBefore, "    ", c.NotAfter, "    ",
-				c.CommonName, "    ", c.MatchingIdentities, "    ", c.IssuerName)
+				c.CommonName, "    ", c.MatchingIdentities, "                 ", c.IssuerName)
 			continue
 		}
 		if Scan.CrtShID {
-			fmt.Print(c.CrtShID, "    ")
+			fmt.Print(c.CrtShID, "      ")
 		}
 		if Scan.LoggedAt {
-			fmt.Print(c.LoggedAt, "    ")
+			fmt.Print(c.LoggedAt, "      ")
 		}
 		if Scan.NotBefore {
-			fmt.Print(c.NotAfter, "    ")
+			fmt.Print(c.NotAfter, "      ")
 		}
 		if Scan.NotAfter {
-			fmt.Print(c.NotAfter, "    ")
+			fmt.Print(c.NotAfter, "      ")
 		}
 		if Scan.CommonName {
-			fmt.Print(c.CommonName, "    ")
+			fmt.Print(c.CommonName, "      ")
 		}
 		if Scan.MatchingIdentities {
-			fmt.Print(c.MatchingIdentities, "    ")
+			fmt.Print(c.MatchingIdentities, "      ")
 		}
 		if Scan.IssuerName {
-			fmt.Print(c.IssuerName, "\n")
+			fmt.Print(c.IssuerName)
 		}
+		fmt.Println()
 	}
 }
